@@ -5,6 +5,7 @@ import LaunchScreen from "../launchScreen/containers/LaunchScreen";
 import NewsList from "../news/containers/NewsList";
 import CurrentNews from "../currentNews/containers/CurrentNews";
 import { headerStyles } from "./styles";
+import BackButton from "../common/components/BackButton";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -13,7 +14,7 @@ const RootStackNavigator = (): ReactElement => {
     headerStyle: headerStyles.headerStyle,
     headerTitleStyle: headerStyles.headerTitleBackStyle,
     title: '',
-    // headerBackImage: BackButton,
+    headerBackImage: BackButton,
     headerBackTitleVisible: false
   };
 

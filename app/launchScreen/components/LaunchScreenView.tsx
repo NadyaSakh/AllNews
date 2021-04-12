@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     letterSpacing: 4.2,
     textTransform: 'uppercase',
-    fontWeight: 'normal',
+    fontWeight: '700',
     color: colors.white,
   }
 });
