@@ -24,7 +24,7 @@ const getNews = async ({
 }: OwnProps): Promise<ResultProps> => {
   try {
     const news = await getNewsListFetch<FetchProps>({
-      urlBase: `?country=ru&pageSize=${pageSize}&page=${page}&apiKey=8dbd435632a04cc8ad04ab9b159c1eed`
+      urlBase: `?country=ru&pageSize=${pageSize}&page=${page}&apiKey=8b2943e9979442e8944871f4dd9fd1c7`
     });
 
     if (news.status === ResponseStatusString.OK) {

@@ -13,6 +13,7 @@ import dateFormater from "../../common/helpers/dateFormater";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/types";
 import FastImage from "react-native-fast-image";
+import NewsImg from "../../../assets/img/news.jpg";
 
 const { width } = Dimensions.get('window');
 
@@ -36,16 +37,30 @@ const CurrentNewsView = (): React.ReactElement => {
     toFormat: 'DD MMMM YYYY'
   });
 
+  const renderImage = (): React.ReactElement => {
+    if(currentNews.urlToImage !== null &&
+      (currentNews.urlToImage.startsWith("https://")|| currentNews.urlToImage.startsWith("http://"))){
+      return <FastImage
+        source={{uri: currentNews.urlToImage}}
+        style={styles.image}
+        resizeMode="cover"
+      />
+    }
+    else {
+      return <FastImage
+        source={NewsImg}
+        style={styles.image}
+        resizeMode="cover"
+      />
+    }
+  };
+
   return  (
     <SafeAreaView style={styles.container}>
       <ScrollView
         style={styles.list}
         contentContainerStyle={styles.contentContainerStyle}>
-        <FastImage
-          source={{uri: currentNews.urlToImage}}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        {renderImage()}
         <Text style={styles.date}>{date}</Text>
         <Text style={styles.title} numberOfLines={0}>
           {currentNews.title}
