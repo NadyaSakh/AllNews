@@ -42,7 +42,7 @@ const NewsListItemView = ({ id}: OwnProps): React.ReactElement => {
       <FastImage
         source={{ uri: newsItem.urlToImage }}
         style={styles.image}
-        resizeMode="center"
+        resizeMode="cover"
       />
       <Text style={styles.date}>{date}</Text>
       <Text style={styles.title} numberOfLines={0}>

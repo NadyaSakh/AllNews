@@ -44,7 +44,7 @@ const CurrentNewsView = (): React.ReactElement => {
         <FastImage
           source={{uri: currentNews.urlToImage}}
           style={styles.image}
-          resizeMode="center"
+          resizeMode="cover"
         />
         <Text style={styles.date}>{date}</Text>
         <Text style={styles.title} numberOfLines={0}>
