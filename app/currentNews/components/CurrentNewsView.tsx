@@ -1,48 +1,55 @@
 import React from "react";
 import {
-  Dimensions, Image,
-  SafeAreaView, ScrollView,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text
 } from "react-native";
 import colors from "../../common/res/colors";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../navigation/types";
-import { newsList } from "../../news/constants";
+import dateFormater from "../../common/helpers/dateFormater";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/types";
+import FastImage from "react-native-fast-image";
 
 const { width } = Dimensions.get('window');
 
 const CurrentNewsView = (): React.ReactElement => {
   const route = useRoute<RouteProp<RootStackParamList, 'CurrentNews'>>();
 
+  const { newsWithIdList } = useSelector(({ news }: RootState) => news);
+
   const {
     params: { newsId }
   } = route;
 
-  const currentNews = newsList.find(
-    (innerItem, index) => {
-      const innerItemId = `${innerItem.publishedAt}${index}`;
-      return innerItemId === newsId;
-    }
-  );
+  const currentNews = newsWithIdList.find(innerItem => innerItem.id === newsId);
 
   if (!currentNews) {
     return <></>;
   }
+
+  const date = dateFormater({
+    date: currentNews.publishedAt,
+    toFormat: 'DD MMMM YYYY'
+  });
 
   return  (
     <SafeAreaView style={styles.container}>
       <ScrollView
         style={styles.list}
         contentContainerStyle={styles.contentContainerStyle}>
-        <Image
+        <FastImage
           source={{uri: currentNews.urlToImage}}
           style={styles.image}
+          resizeMode="center"
         />
+        <Text style={styles.date}>{date}</Text>
         <Text style={styles.title} numberOfLines={0}>
           {currentNews.title}
         </Text>
-        {/*content*/}
         <Text style={styles.desc} numberOfLines={0}>
           {currentNews.description}
         </Text>
@@ -68,9 +75,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30
   },
   image: {
-    width: width - 60,
+    width: width - 40,
     alignSelf: 'center',
-    height: 220,
+    height: 180,
     borderRadius: 4,
     overflow: 'hidden'
   },

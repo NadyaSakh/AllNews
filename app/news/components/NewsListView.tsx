@@ -8,20 +8,28 @@ import {
   Text, TextInput, TouchableOpacity, View
 } from "react-native";
 import colors from "../../common/res/colors";
-import { newsList } from "../constants";
-import { NewsItem } from "../types";
+import { NewsItemWithId } from "../types";
 import NewsListItemView from "./NewsListItemView";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/types";
 
 const { width } = Dimensions.get('window');
 
-const renderItem = ({ item, index }: ListRenderItemInfo<NewsItem>): React.ReactElement => {
-  const id = `${item.publishedAt}${index}`;
-  return <NewsListItemView newsItem={item} id={id}/>;
+interface OwnProps {
+  onRefresh: () => void;
+  onEndReached: () => void;
+  refreshing: boolean;
+}
+
+const renderItem = ({ item }: ListRenderItemInfo<NewsItemWithId>): React.ReactElement => {
+  return <NewsListItemView id={item.id}/>;
 };
 
-const keyExtractor = (item: NewsItem, index: number): string => `${item.publishedAt}${index}`;
+const keyExtractor = (item: NewsItemWithId): string => `${item.id}`;
 
-const NewsListView = (): React.ReactElement => {
+const NewsListView = ({onRefresh, onEndReached, refreshing}: OwnProps): React.ReactElement => {
+  const { newsWithIdList } = useSelector(({ news }: RootState) => news);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Новости</Text>
@@ -37,10 +45,14 @@ const NewsListView = (): React.ReactElement => {
       </View>
 
       <FlatList
-        style={styles.list}
-        data={newsList}
+        data={newsWithIdList}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        style={styles.list}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+        onEndReachedThreshold={0.1}
+        onEndReached={onEndReached}
       />
     </SafeAreaView>
   );

@@ -1,38 +1,50 @@
 import React from "react";
 import {
   Dimensions,
-  Image,
   StyleSheet,
   TouchableOpacity,
   Text
 } from "react-native";
-import { NewsItem } from "../types";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import colors from "../../common/res/colors";
+import dateFormater from "../../common/helpers/dateFormater";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/types";
+import FastImage from "react-native-fast-image";
 
 const { width } = Dimensions.get('window');
 
 interface OwnProps {
-  newsItem: NewsItem;
   id: string;
 }
 
-const NewsListItemView = ({newsItem, id}: OwnProps): React.ReactElement => {
+const NewsListItemView = ({ id}: OwnProps): React.ReactElement => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const newsItem = useSelector(({ news: { newsWithIdList } }: RootState) =>
+    newsWithIdList.find(innerItem => innerItem.id === id)
+  );
+
+  if (!newsItem) {
+    return <></>;
+  }
 
   const onPressNews = (): void => {
      navigation.navigate('CurrentNews', { newsId: id});
   };
 
+  const date = dateFormater({ date: newsItem.publishedAt, toFormat: 'DD MMMM YYYY' });
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPressNews}>
-      <Image
+      <FastImage
         source={{ uri: newsItem.urlToImage }}
         style={styles.image}
-        resizeMode="cover"
+        resizeMode="center"
       />
+      <Text style={styles.date}>{date}</Text>
       <Text style={styles.title} numberOfLines={0}>
         {newsItem.title}
       </Text>
@@ -51,11 +63,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflow: 'visible'
   },
+  date: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: colors.dark,
+    opacity: 0.7,
+    fontWeight: '500',
+    marginTop: 12,
+    marginBottom: 8,
+    marginLeft: 12
+  },
   image: {
-    width: width - 60,
-    height: 220,
-    borderTopRightRadius: 12,
-    borderTopLeftRadius: 12
+    width: width - 64,
+    height: 180,
+    alignSelf: 'center'
   },
   title: {
     fontSize: 16,
