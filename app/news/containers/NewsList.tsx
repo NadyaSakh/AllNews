@@ -14,6 +14,7 @@ const NewsList = (): React.ReactElement => {
   const [isNeedLoading, setIsNeedLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [limitNews, setLimitNews] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
 
   const news = useSelector(({ news }: RootState) => news.newsList);
 
@@ -40,10 +41,13 @@ const NewsList = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    getNewsList();
-  }, [page, refreshing]);
+    if(!isSearching){
+      getNewsList();
+    }
+  }, [page, refreshing, isSearching]);
 
   const onRefresh = (): void => {
+    setIsSearching(false);
     dispatch(setNewsList([]));
     setPage(1);
     setRefreshing(true);
@@ -57,6 +61,28 @@ const NewsList = (): React.ReactElement => {
       }
     }
   };
+
+  const onSearchPressed = (searchText: string): void => {
+    if (searchText.length) {
+      setIsSearching(true);
+
+      const filterNewsList = news.filter(innerItem =>
+        innerItem.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+
+      dispatch(setNewsList(
+        filterNewsList.map(innerItem => ({
+          ...innerItem
+        }))
+      ));
+    }
+  };
+
+  const onClosePressed = (): void => {
+    setIsSearching(false);
+    onRefresh();
+  };
+
   return loading ? (
     <Spinner />
   ) : (
@@ -64,6 +90,8 @@ const NewsList = (): React.ReactElement => {
       onRefresh={onRefresh}
       onEndReached={onEndReached}
       refreshing={refreshing}
+      onSearchPressed={onSearchPressed}
+      onClosePressed={onClosePressed}
     />
   );
 };

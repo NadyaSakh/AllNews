@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -12,6 +12,7 @@ import { NewsItemWithId } from "../types";
 import NewsListItemView from "./NewsListItemView";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/types";
+import { CloseVector } from "../../res";
 
 const { width } = Dimensions.get('window');
 
@@ -19,27 +20,55 @@ interface OwnProps {
   onRefresh: () => void;
   onEndReached: () => void;
   refreshing: boolean;
+  onSearchPressed: (searchText: string) => void;
+  onClosePressed: () => void;
 }
 
 const renderItem = ({ item }: ListRenderItemInfo<NewsItemWithId>): React.ReactElement => {
-  return <NewsListItemView id={item.id}/>;
+  return <NewsListItemView id={item.id} />;
 };
 
 const keyExtractor = (item: NewsItemWithId): string => `${item.id}`;
 
-const NewsListView = ({onRefresh, onEndReached, refreshing}: OwnProps): React.ReactElement => {
+const NewsListView = ({
+  onRefresh,
+  onEndReached,
+  refreshing,
+  onSearchPressed,
+  onClosePressed
+}: OwnProps): React.ReactElement => {
   const { newsWithIdList } = useSelector(({ news }: RootState) => news);
+
+  const [searchText, setSearchText] = useState('');
+
+  const onChangeSearchText = (searchText: string): void => {
+    setSearchText(searchText);
+  };
+
+  const onPressLocal = (): void => {
+    onSearchPressed(searchText);
+  };
+
+  const onClosePressedLocal = (): void => {
+    setSearchText('');
+    onClosePressed();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Новости</Text>
       <View style={styles.searchContainer}>
         <TextInput
+          value={searchText}
           style={styles.input}
           placeholderTextColor={`${colors.dark}40`}
-          placeholder="Введите заголовок новости"
+          placeholder="Введите название новости"
+          onChangeText={onChangeSearchText}
         />
-        <TouchableOpacity style={styles.searchButton}>
+        <TouchableOpacity style={styles.closeButton} onPress={onClosePressedLocal}>
+          <CloseVector />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.searchButton} onPress={onPressLocal}>
           <Text style={styles.searchText}>Поиск</Text>
         </TouchableOpacity>
       </View>
@@ -66,6 +95,17 @@ const styles = StyleSheet.create({
     width,
     backgroundColor: colors.lightGray
   },
+  closeButton: {
+    width: 30,
+    height: 30,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    right: 70,
+    top: 10
+  },
   searchContainer: {
     flexDirection: 'row',
     width: width - 50,
@@ -76,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   searchButton: {
-    paddingHorizontal: 8,
+    width: 60,
     height: 40,
     backgroundColor: colors.blue,
     borderRadius: 8,
