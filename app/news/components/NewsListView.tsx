@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     position: 'absolute',
-    right: 70,
+    right: 60,
     top: 10
   },
   searchContainer: {
     flexDirection: 'row',
-    width: width - 50,
+    width: width - 40,
     justifyContent: 'space-between',
     alignSelf: 'center',
     backgroundColor: 'transparent',
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   searchButton: {
-    width: 60,
+    width: 55,
     height: 40,
     backgroundColor: colors.blue,
     borderRadius: 8,
@@ -130,17 +130,17 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   input: {
-    width: (width - 120),
+    width: (width - 100),
     height: 48,
     paddingLeft: 13,
-    fontSize: 16,
-    lineHeight: 18,
+    fontSize: 14,
     color: colors.dark,
     backgroundColor: colors.lightGray,
     borderWidth: 1,
     borderColor: `${colors.dark}10`,
     borderRadius: 4,
-    marginBottom: 25
+    marginBottom: 25,
+    flexWrap: 'wrap'
   },
   list: {
     width

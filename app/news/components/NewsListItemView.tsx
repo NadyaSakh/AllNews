@@ -13,6 +13,7 @@ import dateFormater from "../../common/helpers/dateFormater";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/types";
 import FastImage from "react-native-fast-image";
+import NewsImg from "../../../assets/img/news.jpg";
 
 const { width } = Dimensions.get('window');
 
@@ -37,13 +38,27 @@ const NewsListItemView = ({ id}: OwnProps): React.ReactElement => {
 
   const date = dateFormater({ date: newsItem.publishedAt, toFormat: 'DD MMMM YYYY' });
 
-  return (
-    <TouchableOpacity style={styles.container} onPress={onPressNews}>
-      <FastImage
-        source={{ uri: newsItem.urlToImage }}
+  const renderImage = (): React.ReactElement => {
+    if(newsItem.urlToImage !== null &&
+      (newsItem.urlToImage.startsWith("https://")|| newsItem.urlToImage.startsWith("http://"))){
+      return <FastImage
+        source={{uri: newsItem.urlToImage}}
         style={styles.image}
         resizeMode="cover"
       />
+    }
+    else {
+      return <FastImage
+        source={NewsImg}
+        style={styles.image}
+        resizeMode="cover"
+      />
+    }
+  };
+
+  return (
+    <TouchableOpacity style={styles.container} onPress={onPressNews}>
+      {renderImage()}
       <Text style={styles.date}>{date}</Text>
       <Text style={styles.title} numberOfLines={0}>
         {newsItem.title}
